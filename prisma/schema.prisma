@@ -1,0 +1,316 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         String
+  name         String
+  phone        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+
+  parent       Parent?
+  student      Student?
+  staff        Staff?
+
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Parent {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  occupation String?
+  address   String?
+
+  children   ParentStudent[]
+}
+
+model ParentStudent {
+  id        String   @id @default(cuid())
+  parentId  String
+  studentId String
+  relation  String   @default("Parent")
+
+  parent    Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, studentId])
+}
+
+model Student {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rollNumber   String
+  admissionNo  String   @unique
+  dateOfBirth  DateTime?
+  gender       String?
+  address      String?
+  bloodGroup   String?
+  parentId     String?
+
+  classId      String
+  class        Class    @relation(fields: [classId], references: [id])
+  sectionId    String
+  section      Section  @relation(fields: [sectionId], references: [id])
+  academicYearId String
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id])
+
+  parents      ParentStudent[]
+  attendance   Attendance[]
+  marks        Mark[]
+  assignments  StudentAssignment[]
+}
+
+model Staff {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId   String   @unique
+  designation  String
+  qualification String?
+  joiningDate  DateTime @default(now())
+  canManageTimetable Boolean @default(false)
+  canManageNotices   Boolean @default(false)
+  canManageEvents    Boolean @default(false)
+  isAdmin      Boolean  @default(false)
+
+  subjects     Subject[]
+  timetablePeriods TimetablePeriod[]
+}
+
+model AcademicYear {
+  id        String   @id @default(cuid())
+  year      String   @unique
+  startDate DateTime
+  endDate   DateTime
+  isActive  Boolean  @default(false)
+
+  students   Student[]
+  exams      Exam[]
+}
+
+model Class {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  level     String
+
+  sections   Section[]
+  students   Student[]
+  subjects   Subject[]
+  timetables Timetable[]
+}
+
+model Section {
+  id        String   @id @default(cuid())
+  name      String
+  classId   String
+  class     Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  students  Student[]
+
+  @@unique([name, classId])
+}
+
+model Subject {
+  id        String   @id @default(cuid())
+  name      String
+  code      String
+  classId   String
+  class     Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  staffId   String?
+  staff     Staff?    @relation(fields: [staffId], references: [id])
+
+  examSubjects ExamSubject[]
+  assignments  Assignment[]
+  attendance   Attendance[]
+  timetablePeriods TimetablePeriod[]
+
+  @@unique([code, classId])
+}
+
+model Exam {
+  id        String   @id @default(cuid())
+  name      String
+  examType  String
+  academicYearId String
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id])
+  startDate DateTime
+  endDate   DateTime
+  isPublished Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  examSubjects ExamSubject[]
+}
+
+model ExamSubject {
+  id        String   @id @default(cuid())
+  examId    String
+  subjectId String
+  examDate  DateTime
+  maxMarks  Int
+  passMarks Int
+
+  exam      Exam      @relation(fields: [examId], references: [id], onDelete: Cascade)
+  subject   Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  marks     Mark[]
+}
+
+model Mark {
+  id           String   @id @default(cuid())
+  studentId    String
+  examSubjectId String
+  internalMarks Int     @default(0)
+  examMarks     Int     @default(0)
+  remarks      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+
+  student      Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  examSubject  ExamSubject @relation(fields: [examSubjectId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, examSubjectId])
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  studentId String
+  date      DateTime
+  status    String
+  subjectId String?
+  subject   Subject? @relation(fields: [subjectId], references: [id])
+  markedBy  String
+  createdAt DateTime @default(now())
+
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date, subjectId])
+}
+
+model Timetable {
+  id        String   @id @default(cuid())
+  classId   String
+  class     Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  day       String
+  isActive  Boolean   @default(true)
+
+  periods   TimetablePeriod[]
+}
+
+model TimetablePeriod {
+  id           String   @id @default(cuid())
+  timetableId  String
+  timetable    Timetable @relation(fields: [timetableId], references: [id], onDelete: Cascade)
+  periodNumber Int
+  startTime    String
+  endTime      String
+  subjectId    String?
+  subject      Subject?  @relation(fields: [subjectId], references: [id])
+  staffId      String?
+  staff        Staff?    @relation(fields: [staffId], references: [id])
+  isBreak      Boolean   @default(false)
+  breakType    String?
+}
+
+model Assignment {
+  id        String   @id @default(cuid())
+  subjectId String
+  subject   Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  title     String
+  description String
+  dueDate   DateTime
+  maxMarks  Int      @default(100)
+  createdAt DateTime @default(now())
+
+  studentAssignments StudentAssignment[]
+}
+
+model StudentAssignment {
+  id           String   @id @default(cuid())
+  assignmentId String
+  studentId    String
+  status       String   @default("Pending")
+  submittedAt  DateTime?
+  marks        Int?
+  feedback     String?
+
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([assignmentId, studentId])
+}
+
+model Notice {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  category  String
+  priority  String   @default("Normal")
+  attachmentUrl String?
+  targetClass String?
+  publishDate DateTime @default(now())
+  expiryDate DateTime?
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  title     String
+  description String
+  category  String
+  startDate DateTime
+  endDate   DateTime?
+  venue     String?
+  imageUrl  String?
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Admission {
+  id        String   @id @default(cuid())
+  studentName String
+  parentName String
+  email     String
+  phone     String
+  applyingClass String
+  message   String?
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+}
+
+model GalleryItem {
+  id        String   @id @default(cuid())
+  title     String
+  category  String
+  imageUrl  String
+  description String?
+  createdAt DateTime @default(now())
+}
+
+model SiteConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+}
