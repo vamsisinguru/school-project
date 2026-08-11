@@ -39,7 +39,7 @@ export function TimetableView({ timetables }: { timetables: any[] }) {
           <div className="p-8 text-center text-navy-400 text-sm">No timetable set for {selectedDay}.</div>
         ) : (
           <div className="divide-y divide-navy-50">
-            {periods.map(period => (
+            {periods.map((period: any) => (
               <div
                 key={period.id}
                 className={cn(
