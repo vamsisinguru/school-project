@@ -46,7 +46,7 @@ export default function ContactPage() {
       <section className="gradient-hero text-white py-10 sm:py-16">
         <div className="container-max px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-[1.75rem] font-bold leading-tight sm:text-5xl">Contact Us</h1>
-          <p className="mt-3 text-sm text-navy-200 max-w-2xl mx-auto sm:mt-4 sm:text-base">We're here to help. Reach out to us with any questions or concerns.</p>
+          <p className="mt-3 text-sm text-navy-200 max-w-2xl mx-auto sm:mt-4 sm:text-base">We&apos;re here to help. Reach out to us with any questions or concerns.</p>
         </div>
       </section>
 
@@ -68,7 +68,7 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <Card className="p-8">
                 <h2 className="text-xl font-bold text-navy-900">Send us a message</h2>
-                <p className="text-sm text-navy-500 mt-1">Fill out the form below and we'll respond within 48 hours.</p>
+                <p className="text-sm text-navy-500 mt-1">Fill out the form below and we&apos;ll respond within 48 hours.</p>
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <Input label="Your Name *" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Enter your name" />

@@ -202,7 +202,7 @@ export default function AdmissionsPage() {
       <section id="apply" className="section-padding">
         <div className="container-max max-w-2xl">
           <h2 className="text-center text-[1.375rem] font-bold text-navy-900 sm:text-3xl">Admission Enquiry Form</h2>
-          <p className="text-center text-navy-500 mt-2 text-sm">Fill out the form below and we'll get back to you within 48 hours.</p>
+          <p className="text-center text-navy-500 mt-2 text-sm">Fill out the form below and we&apos;ll get back to you within 48 hours.</p>
           <Card className="mt-8 p-8">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">

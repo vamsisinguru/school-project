@@ -62,7 +62,7 @@ export default function AcademicsPage() {
       <section className="gradient-hero text-white py-10 sm:py-16">
         <div className="container-max px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-[1.75rem] font-bold leading-tight sm:text-5xl">Academic Programs</h1>
-          <p className="mt-3 text-sm text-navy-200 max-w-2xl mx-auto sm:mt-4 sm:text-base">Comprehensive education from primary to higher secondary, designed to nurture every student's potential.</p>
+          <p className="mt-3 text-sm text-navy-200 max-w-2xl mx-auto sm:mt-4 sm:text-base">Comprehensive education from primary to higher secondary, designed to nurture every student&apos;s potential.</p>
         </div>
       </section>
 
