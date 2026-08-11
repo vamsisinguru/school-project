@@ -11,7 +11,7 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { Card } from '@/components/ui';
 import { prisma } from '@/lib/prisma';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function getSiteConfig() {
   const configs = await prisma.siteConfig.findMany();

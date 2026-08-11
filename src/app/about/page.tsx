@@ -6,6 +6,8 @@ import { Card } from '@/components/ui';
 import { Target, Eye, Award, Users, Building2, Trophy, BookOpen, Heart, Lightbulb, GraduationCap } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'About Us',
   description: 'Learn about Sri Chaitanya School - our vision, mission, academic excellence, and commitment to student development for over 25 years.',

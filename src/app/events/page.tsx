@@ -5,6 +5,8 @@ import { Card } from '@/components/ui';
 import { prisma } from '@/lib/prisma';
 import { Calendar, MapPin, Bell, AlertCircle } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Events & Announcements',
   description: 'Stay updated with upcoming events, announcements, holidays, and important dates at Sri Chaitanya School.',

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Explore moments from Sri Chaitanya School - campus, classrooms, sports, events, cultural activities, annual day, and field trips.',
 };
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function getGalleryItems() {
   return prisma.galleryItem.findMany({ orderBy: { createdAt: 'desc' } });
