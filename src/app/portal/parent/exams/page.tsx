@@ -10,12 +10,12 @@ import { formatDate, calculateGrade } from '@/lib/utils';
 export const metadata = { robots: { index: false, follow: false } };
 
 const navItems = [
-  { href: '/portal/parent', label: 'Overview', icon: LayoutDashboard },
-  { href: '/portal/parent/attendance', label: 'Attendance', icon: CheckCircle2 },
-  { href: '/portal/parent/report-card', label: 'Report Card', icon: FileText },
-  { href: '/portal/parent/timetable', label: 'Timetable', icon: Clock },
-  { href: '/portal/parent/exams', label: 'Exams', icon: GraduationCap },
-  { href: '/portal/parent/notices', label: 'Notices', icon: Bell },
+  { href: '/portal/parent', label: 'Overview', icon: 'dashboard' },
+  { href: '/portal/parent/attendance', label: 'Attendance', icon: 'check-circle' },
+  { href: '/portal/parent/report-card', label: 'Report Card', icon: 'file-text' },
+  { href: '/portal/parent/timetable', label: 'Timetable', icon: 'clock' },
+  { href: '/portal/parent/exams', label: 'Exams', icon: 'graduation-cap' },
+  { href: '/portal/parent/notices', label: 'Notices', icon: 'bell' },
 ];
 
 export default async function ParentExamsPage() {

@@ -7,6 +7,7 @@ import {
   GraduationCap, Menu, X, LogOut, Bell, ChevronDown, User,
   LayoutDashboard, Clock, CheckCircle2, BookOpen, Users,
   CheckSquare, FileEdit, Calendar, UserCog, ClipboardList, Image,
+  FileText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getAvatarUrl } from '@/lib/utils';
@@ -31,6 +32,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   'user-cog': UserCog,
   'clipboard-list': ClipboardList,
   image: Image,
+  'file-text': FileText,
 };
 
 interface DashboardShellProps {
