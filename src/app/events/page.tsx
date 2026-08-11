@@ -3,6 +3,7 @@ import { Navbar } from '@/components/public/Navbar';
 import { Footer } from '@/components/public/Footer';
 import { Card } from '@/components/ui';
 import { prisma } from '@/lib/prisma';
+import { safeQuery, fbEvents, fbPastEvents, fbNotices } from '@/lib/db-fallback';
 import { Calendar, MapPin, Bell, AlertCircle } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -12,19 +13,15 @@ export const metadata: Metadata = {
   description: 'Stay updated with upcoming events, announcements, holidays, and important dates at Sri Chaitanya School.',
 };
 
-export const revalidate = 3600;
-
 async function getEvents() {
   const now = new Date();
-  const [upcoming, past] = await Promise.all([
-    prisma.event.findMany({ where: { startDate: { gte: now } }, orderBy: { startDate: 'asc' } }),
-    prisma.event.findMany({ where: { startDate: { lt: now } }, orderBy: { startDate: 'desc' }, take: 6 }),
-  ]);
+  const upcoming = await safeQuery(() => prisma.event.findMany({ where: { startDate: { gte: now } }, orderBy: { startDate: 'asc' } }), fbEvents);
+  const past = await safeQuery(() => prisma.event.findMany({ where: { startDate: { lt: now } }, orderBy: { startDate: 'desc' }, take: 6 }), fbPastEvents);
   return { upcoming, past };
 }
 
 async function getNotices() {
-  return prisma.notice.findMany({ orderBy: { publishDate: 'desc' } });
+  return safeQuery(() => prisma.notice.findMany({ orderBy: { publishDate: 'desc' } }), fbNotices);
 }
 
 export default async function EventsPage() {

@@ -5,6 +5,7 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { Card } from '@/components/ui';
 import { Target, Eye, Award, Users, Building2, Trophy, BookOpen, Heart, Lightbulb, GraduationCap } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
+import { safeQuery, fbConfig } from '@/lib/db-fallback';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,8 +15,10 @@ export const metadata: Metadata = {
 };
 
 async function getSiteConfig() {
-  const configs = await prisma.siteConfig.findMany();
-  return Object.fromEntries(configs.map((c) => [c.key, c.value]));
+  return safeQuery(async () => {
+    const configs = await prisma.siteConfig.findMany();
+    return Object.fromEntries(configs.map((c) => [c.key, c.value]));
+  }, fbConfig);
 }
 
 export default async function AboutPage() {

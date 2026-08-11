@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Navbar } from '@/components/public/Navbar';
 import { Footer } from '@/components/public/Footer';
 import { prisma } from '@/lib/prisma';
+import { safeQuery, fbGallery } from '@/lib/db-fallback';
 import { GalleryClient } from '@/components/public/GalleryClient';
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 async function getGalleryItems() {
-  return prisma.galleryItem.findMany({ orderBy: { createdAt: 'desc' } });
+  return safeQuery(() => prisma.galleryItem.findMany({ orderBy: { createdAt: 'desc' } }), fbGallery);
 }
 
 export default async function GalleryPage() {
