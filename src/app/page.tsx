@@ -10,30 +10,39 @@ import { Footer } from '@/components/public/Footer';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { Card } from '@/components/ui';
 import { prisma } from '@/lib/prisma';
-import { safeQuery, fbConfig, fbEvents, fbNotices } from '@/lib/db-fallback';
 
 export const dynamic = 'force-dynamic';
 
 async function getSiteConfig() {
-  return safeQuery(async () => {
+  try {
     const configs = await prisma.siteConfig.findMany();
     return Object.fromEntries(configs.map((c) => [c.key, c.value]));
-  }, fbConfig);
+  } catch {
+    return {};
+  }
 }
 
 async function getUpcomingEvents() {
-  return safeQuery(() => prisma.event.findMany({
-    where: { startDate: { gte: new Date() } },
-    orderBy: { startDate: 'asc' },
-    take: 4,
-  }), fbEvents);
+  try {
+    return await prisma.event.findMany({
+      where: { startDate: { gte: new Date() } },
+      orderBy: { startDate: 'asc' },
+      take: 4,
+    });
+  } catch {
+    return [];
+  }
 }
 
 async function getNotices() {
-  return safeQuery(() => prisma.notice.findMany({
-    orderBy: { publishDate: 'desc' },
-    take: 5,
-  }), fbNotices);
+  try {
+    return await prisma.notice.findMany({
+      orderBy: { publishDate: 'desc' },
+      take: 5,
+    });
+  } catch {
+    return [];
+  }
 }
 
 export default async function HomePage() {
