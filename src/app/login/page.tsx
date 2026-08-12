@@ -44,11 +44,17 @@ export default function LoginPage() {
         else if (data.user.role === 'STUDENT') router.push('/portal/student');
         else if (data.user.role === 'STAFF') router.push('/portal/staff');
         else if (data.user.role === 'ADMIN') router.push('/portal/admin');
+      } else if (res.status === 503) {
+        toast('Unable to connect to the server. Please try again.', 'error');
+      } else if (res.status === 401) {
+        toast('Invalid username or password', 'error');
+      } else if (res.status === 403) {
+        toast(data.error || 'Wrong account type selected', 'error');
       } else {
-        toast(data.error || 'Login failed', 'error');
+        toast(data.error || 'Login failed. Please try again.', 'error');
       }
     } catch {
-      toast('An error occurred during login', 'error');
+      toast('Unable to connect to the server. Please try again.', 'error');
     }
     setLoading(false);
   };

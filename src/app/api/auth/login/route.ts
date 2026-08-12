@@ -13,17 +13,38 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { email, password, role } = schema.parse(body);
 
-    const user = await authenticate(email, password);
+    let user;
+    try {
+      user = await authenticate(email, password);
+    } catch (dbError) {
+      console.error('Database error during login:', dbError);
+      return NextResponse.json(
+        { error: 'Unable to connect to the server. Please try again.' },
+        { status: 503 }
+      );
+    }
 
     if (!user) {
-      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
+      return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     }
 
     if (user.role !== role) {
-      return NextResponse.json({ error: `This account is not a ${role.toLowerCase()} account. Please select the correct role.` }, { status: 403 });
+      return NextResponse.json(
+        { error: `This account is not a ${role.toLowerCase()} account. Please select the correct role.` },
+        { status: 403 }
+      );
     }
 
-    const token = await createSession(user.id);
+    let token;
+    try {
+      token = await createSession(user.id);
+    } catch (sessionError) {
+      console.error('Session creation error:', sessionError);
+      return NextResponse.json(
+        { error: 'Unable to connect to the server. Please try again.' },
+        { status: 503 }
+      );
+    }
 
     const response = NextResponse.json({
       success: true,
@@ -43,6 +64,10 @@ export async function POST(req: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 });
     }
-    return NextResponse.json({ error: 'Login failed' }, { status: 500 });
+    console.error('Unexpected login error:', error);
+    return NextResponse.json(
+      { error: 'Unable to connect to the server. Please try again.' },
+      { status: 500 }
+    );
   }
 }
